@@ -2,10 +2,20 @@
 全局配置——通过环境变量或直接修改此文件来调整参数。
 """
 
+import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
+
+def _get_root() -> Path:
+    """兼容 PyInstaller 打包后的路径"""
+    if getattr(sys, "frozen", False):
+        # PyInstaller 打包: 用 sys._MEIPASS
+        return Path(sys._MEIPASS)
+    return Path(__file__).resolve().parent.parent
+
+
+ROOT = _get_root()
 PROFILES_DIR = ROOT / "config" / "profiles"
 GESTURE_DEFS = ROOT / "gesture" / "definitions" / "standard.json"
 ACTIONS_DEFS = ROOT / "actions" / "definitions" / "naruto_actions.json"

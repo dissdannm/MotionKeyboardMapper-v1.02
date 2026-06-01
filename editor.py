@@ -13,7 +13,10 @@ from tkinter import Toplevel, Frame, Label, Button, Entry, StringVar, IntVar, \
     DoubleVar, BooleanVar, Checkbutton, OptionMenu, messagebox, \
     Listbox, Scrollbar, Canvas, DISABLED, NORMAL
 
-ROOT = Path(__file__).resolve().parent
+if getattr(sys, "frozen", False):
+    ROOT = Path(sys._MEIPASS)
+else:
+    ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
 from config.settings import PROFILES_DIR, ACTIONS_DEFS, METRIC_CATALOG

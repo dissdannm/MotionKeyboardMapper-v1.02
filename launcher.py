@@ -14,8 +14,11 @@ from pathlib import Path
 from tkinter import Tk, Frame, Label, Button, OptionMenu, StringVar, IntVar, \
     Entry, messagebox, ttk, DISABLED, NORMAL, BooleanVar
 
-# 确保项目根目录在 sys.path
-ROOT = Path(__file__).resolve().parent
+# 确保项目根目录在 sys.path (兼容 PyInstaller)
+if getattr(sys, "frozen", False):
+    ROOT = Path(sys._MEIPASS)
+else:
+    ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
 from config.settings import PROFILES_DIR, ACTIONS_DEFS, METRIC_CATALOG, MODEL_PATH
