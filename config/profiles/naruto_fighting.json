@@ -1,0 +1,93 @@
+{
+  "profile_id": "naruto_fighting",
+  "profile_name": "火影忍者格斗",
+  "description": "体感动作 → 键盘映射（火影忍者究极风暴风格）",
+  "version": "1.0.0",
+  "player_count": 1,
+  "mappings": [
+    {
+      "action_id": "walk_forward",
+      "action_name": "向前大步走",
+      "key": "w",
+      "hold": true,
+      "description": "身体前倾+高抬腿迈步 → W键前进"
+    },
+    {
+      "action_id": "walk_backward",
+      "action_name": "向后大步退",
+      "key": "s",
+      "hold": true,
+      "description": "身体后仰+后撤步 → S键后退"
+    },
+    {
+      "action_id": "walk_left",
+      "action_name": "向左大步走",
+      "key": "a",
+      "hold": true,
+      "description": "身体左倾+左侧步 → A键左移"
+    },
+    {
+      "action_id": "walk_right",
+      "action_name": "向右大步走",
+      "key": "d",
+      "hold": true,
+      "description": "身体右倾+右侧步 → D键右移"
+    },
+    {
+      "action_id": "right_punch",
+      "action_name": "右手直拳前推",
+      "key": "k",
+      "hold": false,
+      "description": "右臂向前伸直出拳 → K键普攻"
+    },
+    {
+      "action_id": "left_punch",
+      "action_name": "左手直拳前推",
+      "key": "k",
+      "hold": false,
+      "description": "左臂向前伸直出拳 → K键普攻"
+    },
+    {
+      "action_id": "both_hands_up",
+      "action_name": "双手向上举过头顶",
+      "key": "j",
+      "hold": false,
+      "description": "双手举过头顶 → J键技能1"
+    },
+    {
+      "action_id": "both_hands_forward",
+      "action_name": "双手向前挥出",
+      "key": "i",
+      "hold": false,
+      "description": "双手同时向前推出 → I键技能2"
+    },
+    {
+      "action_id": "t_pose",
+      "action_name": "双手侧平举",
+      "key": "l",
+      "hold": false,
+      "description": "双臂水平展开呈T字 → L键技能3"
+    },
+    {
+      "action_id": "squat",
+      "action_name": "下蹲",
+      "key": "r",
+      "hold": true,
+      "description": "屈膝下蹲 → R键通灵"
+    },
+    {
+      "action_id": "side_shuffle",
+      "action_name": "左右快速侧身",
+      "key": "space",
+      "hold": false,
+      "description": "快速左右侧身 → 空格键替身"
+    },
+    {
+      "action_id": "small_jump",
+      "action_name": "小跳",
+      "key": "e",
+      "hold": false,
+      "description": "原地轻跳 → E键密卷"
+    }
+  ]
+}

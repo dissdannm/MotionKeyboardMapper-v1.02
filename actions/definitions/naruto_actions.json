@@ -1,0 +1,286 @@
+{
+  "_description": "火影忍者格斗 — 全身姿态动作定义。每个动作引用 metric_catalog 中的指标ID。",
+  "version": "1.0.0",
+  "player_count": 1,
+
+  "actions": {
+
+    "walk_forward": {
+      "action_id": "walk_forward",
+      "name": "向前大步走",
+      "action_type": "motion",
+      "description": "身体前倾 + 高抬腿向前迈步",
+      "hold_frames": 3,
+      "enabled_metrics": ["trunk_tilt", "trunk_ground_angle", "left_hip", "right_hip"],
+      "metric_rules": {
+        "trunk_tilt": {
+          "normal_lo": 40, "normal_hi": 80,
+          "severity_rules": []
+        },
+        "trunk_ground_angle": {
+          "normal_lo": 40, "normal_hi": 80,
+          "severity_rules": []
+        },
+        "left_hip": {
+          "normal_lo": 60, "normal_hi": 100,
+          "severity_rules": []
+        }
+      },
+      "conflict_group": "movement"
+    },
+
+    "walk_backward": {
+      "action_id": "walk_backward",
+      "name": "向后大步退",
+      "action_type": "motion",
+      "description": "身体后仰 + 向后撤步",
+      "hold_frames": 3,
+      "enabled_metrics": ["trunk_tilt", "body_line_angle"],
+      "metric_rules": {
+        "trunk_tilt": {
+          "normal_lo": 100, "normal_hi": 150,
+          "severity_rules": []
+        },
+        "body_line_angle": {
+          "normal_lo": 10, "normal_hi": 40,
+          "severity_rules": []
+        }
+      },
+      "conflict_group": "movement"
+    },
+
+    "walk_left": {
+      "action_id": "walk_left",
+      "name": "向左大步走",
+      "action_type": "motion",
+      "description": "身体重心偏左 + 左侧跨步",
+      "hold_frames": 3,
+      "enabled_metrics": ["center_offset", "pelvis_tilt"],
+      "metric_rules": {
+        "center_offset": {
+          "normal_lo": -0.15, "normal_hi": -0.03,
+          "severity_rules": []
+        },
+        "pelvis_tilt": {
+          "normal_lo": 5, "normal_hi": 25,
+          "severity_rules": []
+        }
+      },
+      "conflict_group": "movement"
+    },
+
+    "walk_right": {
+      "action_id": "walk_right",
+      "name": "向右大步走",
+      "action_type": "motion",
+      "description": "身体重心偏右 + 右侧跨步",
+      "hold_frames": 3,
+      "enabled_metrics": ["center_offset", "pelvis_tilt"],
+      "metric_rules": {
+        "center_offset": {
+          "normal_lo": 0.03, "normal_hi": 0.15,
+          "severity_rules": []
+        },
+        "pelvis_tilt": {
+          "normal_lo": -25, "normal_hi": -5,
+          "severity_rules": []
+        }
+      },
+      "conflict_group": "movement"
+    },
+
+    "right_punch": {
+      "action_id": "right_punch",
+      "name": "右手直拳前推",
+      "action_type": "pose",
+      "description": "右臂向前伸展出拳",
+      "hold_frames": 1,
+      "enabled_metrics": ["right_elbow"],
+      "metric_rules": {
+        "right_elbow": {
+          "normal_lo": 150, "normal_hi": 185,
+          "severity_rules": [
+            {"level": "mild", "threshold": 20, "operator": "lt"}
+          ]
+        }
+      },
+      "conflict_group": "arm_action"
+    },
+
+    "left_punch": {
+      "action_id": "left_punch",
+      "name": "左手直拳前推",
+      "action_type": "pose",
+      "description": "左臂向前伸展出拳",
+      "hold_frames": 1,
+      "enabled_metrics": ["left_elbow"],
+      "metric_rules": {
+        "left_elbow": {
+          "normal_lo": 150, "normal_hi": 185,
+          "severity_rules": [
+            {"level": "mild", "threshold": 20, "operator": "lt"}
+          ]
+        }
+      },
+      "conflict_group": "arm_action"
+    },
+
+    "both_hands_up": {
+      "action_id": "both_hands_up",
+      "name": "双手向上举过头顶",
+      "action_type": "pose",
+      "description": "双臂上举，手腕高于头顶",
+      "hold_frames": 2,
+      "enabled_metrics": ["left_shoulder", "right_shoulder", "left_elbow", "right_elbow"],
+      "metric_rules": {
+        "left_shoulder": {
+          "normal_lo": 10, "normal_hi": 50,
+          "severity_rules": []
+        },
+        "right_shoulder": {
+          "normal_lo": 10, "normal_hi": 50,
+          "severity_rules": []
+        },
+        "left_elbow": {
+          "normal_lo": 160, "normal_hi": 190,
+          "severity_rules": []
+        },
+        "right_elbow": {
+          "normal_lo": 160, "normal_hi": 190,
+          "severity_rules": []
+        }
+      },
+      "conflict_group": "arm_action"
+    },
+
+    "both_hands_forward": {
+      "action_id": "both_hands_forward",
+      "name": "双手向前挥出",
+      "action_type": "pose",
+      "description": "双臂同时向前推出",
+      "hold_frames": 2,
+      "enabled_metrics": ["left_elbow", "right_elbow", "left_shoulder", "right_shoulder"],
+      "metric_rules": {
+        "left_elbow": {
+          "normal_lo": 140, "normal_hi": 185,
+          "severity_rules": []
+        },
+        "right_elbow": {
+          "normal_lo": 140, "normal_hi": 185,
+          "severity_rules": []
+        },
+        "left_shoulder": {
+          "normal_lo": 80, "normal_hi": 110,
+          "severity_rules": []
+        },
+        "right_shoulder": {
+          "normal_lo": 80, "normal_hi": 110,
+          "severity_rules": []
+        }
+      },
+      "conflict_group": "arm_action"
+    },
+
+    "t_pose": {
+      "action_id": "t_pose",
+      "name": "双手侧平举 (T-Pose)",
+      "action_type": "pose",
+      "description": "双臂水平展开呈T字形",
+      "hold_frames": 2,
+      "enabled_metrics": ["left_shoulder", "right_shoulder", "left_elbow", "right_elbow"],
+      "metric_rules": {
+        "left_shoulder": {
+          "normal_lo": 70, "normal_hi": 110,
+          "severity_rules": []
+        },
+        "right_shoulder": {
+          "normal_lo": 70, "normal_hi": 110,
+          "severity_rules": []
+        },
+        "left_elbow": {
+          "normal_lo": 150, "normal_hi": 190,
+          "severity_rules": []
+        },
+        "right_elbow": {
+          "normal_lo": 150, "normal_hi": 190,
+          "severity_rules": []
+        }
+      },
+      "conflict_group": "arm_action"
+    },
+
+    "squat": {
+      "action_id": "squat",
+      "name": "下蹲",
+      "action_type": "pose",
+      "description": "屈膝下蹲，臀部下降",
+      "hold_frames": 3,
+      "enabled_metrics": ["left_knee", "right_knee", "left_hip", "right_hip"],
+      "metric_rules": {
+        "left_knee": {
+          "normal_lo": 50, "normal_hi": 120,
+          "severity_rules": []
+        },
+        "right_knee": {
+          "normal_lo": 50, "normal_hi": 120,
+          "severity_rules": []
+        },
+        "left_hip": {
+          "normal_lo": 30, "normal_hi": 90,
+          "severity_rules": []
+        },
+        "right_hip": {
+          "normal_lo": 30, "normal_hi": 90,
+          "severity_rules": []
+        }
+      },
+      "conflict_group": "body_action"
+    },
+
+    "side_shuffle": {
+      "action_id": "side_shuffle",
+      "name": "左右快速侧身",
+      "action_type": "motion",
+      "description": "快速左右侧倾身体",
+      "hold_frames": 2,
+      "enabled_metrics": ["center_offset", "body_line_angle", "lateral_velocity"],
+      "metric_rules": {
+        "center_offset": {
+          "normal_lo": -0.12, "normal_hi": 0.12,
+          "severity_rules": [
+            {"level": "mild", "threshold": 0.08, "operator": "gt"}
+          ]
+        },
+        "lateral_velocity": {
+          "normal_lo": 0.5, "normal_hi": 10.0,
+          "severity_rules": []
+        },
+        "body_line_angle": {
+          "normal_lo": 15, "normal_hi": 50,
+          "severity_rules": []
+        }
+      },
+      "conflict_group": "body_action"
+    },
+
+    "small_jump": {
+      "action_id": "small_jump",
+      "name": "小跳",
+      "action_type": "motion",
+      "description": "原地轻跳，双脚离地",
+      "hold_frames": 2,
+      "enabled_metrics": ["vertical_velocity", "body_line_angle"],
+      "metric_rules": {
+        "vertical_velocity": {
+          "normal_lo": 0.5, "normal_hi": 15.0,
+          "severity_rules": []
+        },
+        "body_line_angle": {
+          "normal_lo": 160, "normal_hi": 200,
+          "severity_rules": []
+        }
+      },
+      "conflict_group": "body_action"
+    }
+  }
+}

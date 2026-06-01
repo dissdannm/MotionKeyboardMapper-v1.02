@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MotionKeyboardMapper - 体感键盘映射</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- 顶栏 -->
+    <header>
+      <h1>MotionKeyboardMapper</h1>
+      <span class="subtitle">体感游戏通用映射服务</span>
+      <span id="status-badge" class="badge stopped">未连接</span>
+    </header>
+
+    <!-- 主区域 -->
+    <main>
+      <!-- 左侧：视频预览 -->
+      <section class="panel video-panel">
+        <h2>摄像头预览</h2>
+        <div id="video-container">
+          <img id="video-feed" src="" alt="等待连接..." style="display:none">
+          <div id="no-video" class="placeholder">点击「启动服务」开始</div>
+        </div>
+        <div id="gesture-display">
+          <span>当前手势: </span><strong id="gesture-text">—</strong>
+        </div>
+        <div id="key-display">
+          <span>映射按键: </span><strong id="key-text">—</strong>
+        </div>
+      </section>
+
+      <!-- 右侧：控制面板 -->
+      <section class="panel control-panel">
+        <!-- 摄像头配置 -->
+        <fieldset>
+          <legend>摄像头设置</legend>
+
+          <div class="form-row">
+            <label>输入源:</label>
+            <select id="cam-type">
+              <option value="local" selected>本地摄像头</option>
+              <option value="ip">IP 摄像头 (手机)</option>
+              <option value="dual">双人模式</option>
+            </select>
+          </div>
+
+          <div class="form-row" id="row-cam-index">
+            <label>摄像头索引:</label>
+            <input type="number" id="cam-index" value="0" min="0" max="9">
+          </div>
+
+          <div class="form-row hidden" id="row-ip-url">
+            <label>IP 地址:</label>
+            <input type="text" id="ip-url" placeholder="http://192.168.x.x:8080/video">
+          </div>
+
+          <div class="form-row hidden" id="row-cam-index-2">
+            <label>玩家2 摄像头索引:</label>
+            <input type="number" id="cam-index-2" value="1" min="0" max="9">
+          </div>
+        </fieldset>
+
+        <!-- 映射配置 -->
+        <fieldset>
+          <legend>映射配置</legend>
+          <div class="form-row">
+            <label>游戏档案:</label>
+            <select id="profile-select"></select>
+          </div>
+          <div class="form-row">
+            <label>按键冷却 (ms):</label>
+            <input type="number" id="cooldown" value="300" min="100" max="2000" step="50">
+          </div>
+          <div class="form-row">
+            <label>保持模式:</label>
+            <input type="checkbox" id="hold-mode" checked>
+            <span class="hint">按住不放 / 取消为单次点击</span>
+          </div>
+        </fieldset>
+
+        <!-- 操作按钮 -->
+        <div class="actions">
+          <button id="btn-start" class="btn primary">启动服务</button>
+          <button id="btn-stop" class="btn danger" disabled>停止</button>
+          <button id="btn-pause" class="btn" disabled>暂停</button>
+        </div>
+
+        <!-- 状态信息 -->
+        <div class="info-bar">
+          <span>FPS: <strong id="info-fps">0</strong></span>
+          <span>玩家数: <strong id="info-players">1</strong></span>
+        </div>
+
+        <!-- 映射表预览 -->
+        <fieldset>
+          <legend>当前映射表</legend>
+          <table id="mapping-table">
+            <thead>
+              <tr><th>体感动作</th><th>游戏操作</th><th>按键</th><th>模式</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </fieldset>
+      </section>
+    </main>
+
+    <footer>
+      <span>提示: 第一次运行会自动下载 MediaPipe 模型 (~10 MB)，请耐心等待。</span>
+      <span>双人模式需要两个摄像头，左右站位分别对应玩家1/2。</span>
+    </footer>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

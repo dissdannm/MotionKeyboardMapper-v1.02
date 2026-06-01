@@ -1,0 +1,383 @@
+{
+  "_description": "标准体感手势定义库。每个手势由若干条件规则组成，引擎逐条评估。",
+  "_version": "1.0.0",
+
+  "gestures": {
+
+    "walk_forward": {
+      "name": "向前大步走",
+      "type": "motion",
+      "hold_frames": 3,
+      "rules": [
+        {
+          "id": "body_lean_forward",
+          "type": "angle_range",
+          "points": ["left_shoulder", "left_hip", "left_knee"],
+          "min": 40,
+          "max": 80,
+          "weight": 0.6,
+          "description": "躯干前倾角在40-80度之间"
+        },
+        {
+          "id": "knee_lift",
+          "type": "relative_height",
+          "point_a": "left_knee",
+          "point_b": "left_hip",
+          "threshold": 0.85,
+          "operator": "above",
+          "weight": 0.4,
+          "description": "膝盖抬高超过髋部85%位置"
+        }
+      ],
+      "conflict_group": "movement"
+    },
+
+    "walk_backward": {
+      "name": "向后大步退",
+      "type": "motion",
+      "hold_frames": 3,
+      "rules": [
+        {
+          "id": "body_lean_backward",
+          "type": "angle_range",
+          "points": ["left_shoulder", "left_hip", "left_knee"],
+          "min": 100,
+          "max": 150,
+          "weight": 0.7,
+          "description": "躯干后仰角在100-150度之间"
+        }
+      ],
+      "conflict_group": "movement"
+    },
+
+    "walk_left": {
+      "name": "向左大步走",
+      "type": "motion",
+      "hold_frames": 3,
+      "rules": [
+        {
+          "id": "body_tilt_left",
+          "type": "relative_position",
+          "point_a": "nose",
+          "point_b": "left_hip",
+          "axis": "x",
+          "threshold": -0.08,
+          "operator": "lt",
+          "weight": 0.7,
+          "description": "身体重心偏左"
+        },
+        {
+          "id": "wide_stance",
+          "type": "distance_ratio",
+          "point_a": "left_ankle",
+          "point_b": "right_ankle",
+          "ref_a": "left_shoulder",
+          "ref_b": "right_shoulder",
+          "min_ratio": 1.3,
+          "weight": 0.3,
+          "description": "脚距明显宽于肩距"
+        }
+      ],
+      "conflict_group": "movement"
+    },
+
+    "walk_right": {
+      "name": "向右大步走",
+      "type": "motion",
+      "hold_frames": 3,
+      "rules": [
+        {
+          "id": "body_tilt_right",
+          "type": "relative_position",
+          "point_a": "nose",
+          "point_b": "right_hip",
+          "axis": "x",
+          "threshold": 0.08,
+          "operator": "gt",
+          "weight": 0.7,
+          "description": "身体重心偏右"
+        },
+        {
+          "id": "wide_stance_right",
+          "type": "distance_ratio",
+          "point_a": "left_ankle",
+          "point_b": "right_ankle",
+          "ref_a": "left_shoulder",
+          "ref_b": "right_shoulder",
+          "min_ratio": 1.3,
+          "weight": 0.3,
+          "description": "脚距明显宽于肩距"
+        }
+      ],
+      "conflict_group": "movement"
+    },
+
+    "right_punch": {
+      "name": "右手直拳前推",
+      "type": "pose",
+      "hold_frames": 1,
+      "rules": [
+        {
+          "id": "right_arm_extended",
+          "type": "angle_range",
+          "points": ["right_shoulder", "right_elbow", "right_wrist"],
+          "min": 150,
+          "max": 185,
+          "weight": 0.5,
+          "description": "右臂肘关节接近伸直"
+        },
+        {
+          "id": "right_wrist_forward",
+          "type": "relative_position",
+          "point_a": "right_wrist",
+          "point_b": "right_shoulder",
+          "axis": "z",
+          "threshold": -0.04,
+          "operator": "lt",
+          "weight": 0.5,
+          "description": "右手腕在肩膀前方（z轴负方向）"
+        }
+      ],
+      "conflict_group": "arm_action"
+    },
+
+    "left_punch": {
+      "name": "左手直拳前推",
+      "type": "pose",
+      "hold_frames": 1,
+      "rules": [
+        {
+          "id": "left_arm_extended",
+          "type": "angle_range",
+          "points": ["left_shoulder", "left_elbow", "left_wrist"],
+          "min": 150,
+          "max": 185,
+          "weight": 0.5,
+          "description": "左臂肘关节接近伸直"
+        },
+        {
+          "id": "left_wrist_forward",
+          "type": "relative_position",
+          "point_a": "left_wrist",
+          "point_b": "left_shoulder",
+          "axis": "z",
+          "threshold": -0.04,
+          "operator": "lt",
+          "weight": 0.5,
+          "description": "左手腕在肩膀前方"
+        }
+      ],
+      "conflict_group": "arm_action"
+    },
+
+    "both_hands_up": {
+      "name": "双手向上举过头顶",
+      "type": "pose",
+      "hold_frames": 2,
+      "rules": [
+        {
+          "id": "left_hand_above_head",
+          "type": "relative_position",
+          "point_a": "left_wrist",
+          "point_b": "nose",
+          "axis": "y",
+          "threshold": -0.05,
+          "operator": "lt",
+          "weight": 0.35,
+          "description": "左手腕高于鼻子"
+        },
+        {
+          "id": "right_hand_above_head",
+          "type": "relative_position",
+          "point_a": "right_wrist",
+          "point_b": "nose",
+          "axis": "y",
+          "threshold": -0.05,
+          "operator": "lt",
+          "weight": 0.35,
+          "description": "右手腕高于鼻子"
+        },
+        {
+          "id": "arms_not_side",
+          "type": "angle_range",
+          "points": ["left_shoulder", "left_elbow", "left_wrist"],
+          "min": 10,
+          "max": 60,
+          "weight": 0.3,
+          "description": "手臂上举而非侧展"
+        }
+      ],
+      "conflict_group": "arm_action"
+    },
+
+    "both_hands_forward": {
+      "name": "双手向前挥出",
+      "type": "pose",
+      "hold_frames": 2,
+      "rules": [
+        {
+          "id": "left_arm_forward",
+          "type": "angle_range",
+          "points": ["left_shoulder", "left_elbow", "left_wrist"],
+          "min": 140,
+          "max": 185,
+          "weight": 0.35,
+          "description": "左臂伸展"
+        },
+        {
+          "id": "right_arm_forward",
+          "type": "angle_range",
+          "points": ["right_shoulder", "right_elbow", "right_wrist"],
+          "min": 140,
+          "max": 185,
+          "weight": 0.35,
+          "description": "右臂伸展"
+        },
+        {
+          "id": "both_wrists_forward",
+          "type": "relative_position",
+          "point_a": "left_wrist",
+          "point_b": "left_shoulder",
+          "axis": "z",
+          "threshold": -0.03,
+          "operator": "lt",
+          "weight": 0.3,
+          "description": "双腕均位于身体前方"
+        }
+      ],
+      "conflict_group": "arm_action"
+    },
+
+    "t_pose": {
+      "name": "双手侧平举",
+      "type": "pose",
+      "hold_frames": 2,
+      "rules": [
+        {
+          "id": "left_arm_horizontal",
+          "type": "angle_range",
+          "points": ["left_elbow", "left_shoulder", "left_hip"],
+          "min": 70,
+          "max": 110,
+          "weight": 0.25,
+          "description": "左臂与躯干夹角约90度"
+        },
+        {
+          "id": "right_arm_horizontal",
+          "type": "angle_range",
+          "points": ["right_elbow", "right_shoulder", "right_hip"],
+          "min": 70,
+          "max": 110,
+          "weight": 0.25,
+          "description": "右臂与躯干夹角约90度"
+        },
+        {
+          "id": "left_elbow_straight",
+          "type": "angle_range",
+          "points": ["left_shoulder", "left_elbow", "left_wrist"],
+          "min": 150,
+          "max": 190,
+          "weight": 0.25,
+          "description": "左肘伸直"
+        },
+        {
+          "id": "right_elbow_straight",
+          "type": "angle_range",
+          "points": ["right_shoulder", "right_elbow", "right_wrist"],
+          "min": 150,
+          "max": 190,
+          "weight": 0.25,
+          "description": "右肘伸直"
+        }
+      ],
+      "conflict_group": "arm_action"
+    },
+
+    "squat": {
+      "name": "下蹲",
+      "type": "pose",
+      "hold_frames": 3,
+      "rules": [
+        {
+          "id": "knee_bent",
+          "type": "angle_range",
+          "points": ["left_hip", "left_knee", "left_ankle"],
+          "min": 50,
+          "max": 120,
+          "weight": 0.5,
+          "description": "左膝弯曲"
+        },
+        {
+          "id": "hip_lowered",
+          "type": "relative_position",
+          "point_a": "left_hip",
+          "point_b": "left_knee",
+          "axis": "y",
+          "threshold": 0.15,
+          "operator": "gt",
+          "weight": 0.5,
+          "description": "臀部明显下降"
+        }
+      ],
+      "conflict_group": "body_action"
+    },
+
+    "side_shuffle": {
+      "name": "左右快速侧身",
+      "type": "motion",
+      "hold_frames": 2,
+      "rules": [
+        {
+          "id": "shoulder_tilt",
+          "type": "angle_range",
+          "points": ["left_shoulder", "right_shoulder", "right_hip"],
+          "min": 105,
+          "max": 160,
+          "weight": 0.6,
+          "description": "肩膀线大幅倾斜"
+        },
+        {
+          "id": "lateral_body_bend",
+          "type": "relative_position",
+          "point_a": "nose",
+          "point_b": "left_hip",
+          "axis": "x",
+          "threshold": -0.12,
+          "operator": "lt",
+          "weight": 0.4,
+          "description": "躯干侧倾"
+        }
+      ],
+      "conflict_group": "body_action"
+    },
+
+    "small_jump": {
+      "name": "小跳",
+      "type": "motion",
+      "hold_frames": 2,
+      "rules": [
+        {
+          "id": "ankles_above_normal",
+          "type": "relative_position",
+          "point_a": "left_ankle",
+          "point_b": "left_knee",
+          "axis": "y",
+          "threshold": -0.05,
+          "operator": "lt",
+          "weight": 0.5,
+          "description": "脚踝位置高于常态"
+        },
+        {
+          "id": "vertical_body",
+          "type": "angle_range",
+          "points": ["nose", "left_hip", "left_ankle"],
+          "min": 160,
+          "max": 200,
+          "weight": 0.5,
+          "description": "身体呈直立跳跃姿态"
+        }
+      ],
+      "conflict_group": "body_action"
+    }
+  }
+}

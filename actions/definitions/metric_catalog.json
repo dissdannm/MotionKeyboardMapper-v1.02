@@ -1,0 +1,202 @@
+{
+  "_description": "身体姿态指标目录 —— 所有可用的测量指标，动作定义通过 metric_id 引用",
+  "version": "1.0.0",
+
+  "metrics": {
+
+    "left_elbow": {
+      "metric_id": "left_elbow",
+      "display_name": "左肘角度",
+      "category": "angle",
+      "unit": "°",
+      "points": ["left_shoulder", "left_elbow", "left_wrist"],
+      "description": "左上臂-前臂夹角，用于判断手臂是否伸展或弯曲"
+    },
+    "right_elbow": {
+      "metric_id": "right_elbow",
+      "display_name": "右肘角度",
+      "category": "angle",
+      "unit": "°",
+      "points": ["right_shoulder", "right_elbow", "right_wrist"],
+      "description": "右上臂-前臂夹角"
+    },
+    "left_shoulder": {
+      "metric_id": "left_shoulder",
+      "display_name": "左肩角度",
+      "category": "angle",
+      "unit": "°",
+      "points": ["left_elbow", "left_shoulder", "left_hip"],
+      "description": "左臂-躯干夹角，判断手臂侧展或上举"
+    },
+    "right_shoulder": {
+      "metric_id": "right_shoulder",
+      "display_name": "右肩角度",
+      "category": "angle",
+      "unit": "°",
+      "points": ["right_elbow", "right_shoulder", "right_hip"],
+      "description": "右臂-躯干夹角"
+    },
+    "left_hip": {
+      "metric_id": "left_hip",
+      "display_name": "左髋角度",
+      "category": "angle",
+      "unit": "°",
+      "points": ["left_shoulder", "left_hip", "left_knee"],
+      "description": "躯干-大腿夹角，判断下蹲或前倾"
+    },
+    "right_hip": {
+      "metric_id": "right_hip",
+      "display_name": "右髋角度",
+      "category": "angle",
+      "unit": "°",
+      "points": ["right_shoulder", "right_hip", "right_knee"],
+      "description": "右侧躯干-大腿夹角"
+    },
+    "left_knee": {
+      "metric_id": "left_knee",
+      "display_name": "左膝角度",
+      "category": "angle",
+      "unit": "°",
+      "points": ["left_hip", "left_knee", "left_ankle"],
+      "description": "大腿-小腿夹角，判断下蹲深度"
+    },
+    "right_knee": {
+      "metric_id": "right_knee",
+      "display_name": "右膝角度",
+      "category": "angle",
+      "unit": "°",
+      "points": ["right_hip", "right_knee", "right_ankle"],
+      "description": "右侧大腿-小腿夹角"
+    },
+    "left_ankle": {
+      "metric_id": "left_ankle",
+      "display_name": "左踝角度",
+      "category": "angle",
+      "unit": "°",
+      "points": ["left_knee", "left_ankle", "left_foot_index"],
+      "description": "小腿-足背夹角"
+    },
+    "right_ankle": {
+      "metric_id": "right_ankle",
+      "display_name": "右踝角度",
+      "category": "angle",
+      "unit": "°",
+      "points": ["right_knee", "right_ankle", "right_foot_index"],
+      "description": "右侧小腿-足背夹角"
+    },
+
+    "trunk_tilt": {
+      "metric_id": "trunk_tilt",
+      "display_name": "躯干倾斜",
+      "category": "alignment",
+      "unit": "°",
+      "description": "躯干前后倾斜角度，用于判断前倾/后仰"
+    },
+    "pelvis_tilt": {
+      "metric_id": "pelvis_tilt",
+      "display_name": "骨盆倾斜",
+      "category": "alignment",
+      "unit": "°",
+      "description": "双髋连线与水平面的夹角"
+    },
+    "neck_forward_offset": {
+      "metric_id": "neck_forward_offset",
+      "display_name": "颈部前伸",
+      "category": "alignment",
+      "unit": "ratio",
+      "description": "鼻子相对于肩部中点的前伸距离比"
+    },
+    "center_offset": {
+      "metric_id": "center_offset",
+      "display_name": "重心偏移",
+      "category": "alignment",
+      "unit": "ratio",
+      "description": "身体重心在左右方向的偏移量，判断侧倾"
+    },
+    "knee_offset_left": {
+      "metric_id": "knee_offset_left",
+      "display_name": "左膝偏移",
+      "category": "alignment",
+      "unit": "ratio",
+      "description": "左膝相对于髋-踝连线的偏移"
+    },
+    "knee_offset_right": {
+      "metric_id": "knee_offset_right",
+      "display_name": "右膝偏移",
+      "category": "alignment",
+      "unit": "ratio",
+      "description": "右膝相对于髋-踝连线的偏移"
+    },
+    "body_line_angle": {
+      "metric_id": "body_line_angle",
+      "display_name": "身体力线角",
+      "category": "alignment",
+      "unit": "°",
+      "description": "肩中点-髋中点连线与垂线的夹角"
+    },
+    "trunk_ground_angle": {
+      "metric_id": "trunk_ground_angle",
+      "display_name": "躯干-地面角",
+      "category": "alignment",
+      "unit": "°",
+      "description": "躯干与水平面的夹角，判断直立/前倾"
+    },
+    "neck_flexion_angle": {
+      "metric_id": "neck_flexion_angle",
+      "display_name": "颈部屈曲角",
+      "category": "alignment",
+      "unit": "°",
+      "description": "耳-肩连线与垂线的夹角"
+    },
+    "lumbar_gap_distance": {
+      "metric_id": "lumbar_gap_distance",
+      "display_name": "腰椎间隙",
+      "category": "alignment",
+      "unit": "ratio",
+      "description": "肩中点与髋中点的水平偏移距离比"
+    },
+
+    "motion_phase": {
+      "metric_id": "motion_phase",
+      "display_name": "动作阶段",
+      "category": "temporal",
+      "unit": "enum",
+      "description": "准备/向心/峰值/离心/完成"
+    },
+    "rep_counter": {
+      "metric_id": "rep_counter",
+      "display_name": "次数计数",
+      "category": "temporal",
+      "unit": "count",
+      "description": "动作重复次数"
+    },
+    "rep_cycle_duration": {
+      "metric_id": "rep_cycle_duration",
+      "display_name": "周期时长",
+      "category": "temporal",
+      "unit": "ms",
+      "description": "单次动作周期时间"
+    },
+    "vertical_velocity": {
+      "metric_id": "vertical_velocity",
+      "display_name": "垂直速度",
+      "category": "temporal",
+      "unit": "ratio/s",
+      "description": "身体重心垂直位移速度，判断跳跃"
+    },
+    "lateral_velocity": {
+      "metric_id": "lateral_velocity",
+      "display_name": "水平速度",
+      "category": "temporal",
+      "unit": "ratio/s",
+      "description": "身体重心水平位移速度，判断测移"
+    },
+    "body_stability": {
+      "metric_id": "body_stability",
+      "display_name": "身体稳定性",
+      "category": "temporal",
+      "unit": "ratio",
+      "description": "连续帧间重心位移的方差倒数"
+    }
+  }
+}
