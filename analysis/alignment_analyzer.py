@@ -26,6 +26,7 @@ class AlignmentResult:
     trunk_ground_angle:  float = 0.0
     neck_flexion_angle:  float = 0.0
     lumbar_gap_distance: float = 0.0
+    hip_vertical:        float = 0.0   # 髋部中点 y 坐标，用于跳跌检测
 
     def to_dict(self) -> dict[str, float]:
         return {k: v for k, v in self.__dict__.items()}
@@ -57,6 +58,7 @@ class AlignmentAnalyzer:
             return
         sm = midpoint(ls, rs)
         hm = midpoint(lh, rh)
+        r.hip_vertical = hm[1]  # 髋部 y 坐标 (归一化)
         dx = sm[0] - hm[0]
         dy = sm[1] - hm[1]
         r.trunk_tilt = safe_ratio(dx, abs(dy), default=0.0)
