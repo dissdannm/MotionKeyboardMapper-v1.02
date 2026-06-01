@@ -449,12 +449,40 @@ class App:
             return
 
         # 姿态估计
-        num_poses = 2 if cam_type_str == "dual" else 1
-        self._pose_est = PoseEstimator(num_poses=num_poses, model_path=str(MODEL_PATH))
-        self._pose_est.open()
+        try:
+            num_poses = 2 if cam_type_str == "dual" else 1
+            model_p = str(MODEL_PATH)
+            if not Path(model_p).exists():
+                messagebox.showerror("错误",
+                    f"模型文件未找到:\n{model_p}\n请确认安装包完整")
+                self.running = False
+                self._camera_mgr.close()
+                return
+            self._pose_est = PoseEstimator(num_poses=num_poses, model_path=model_p)
+            self._pose_est.open()
+        except Exception as e:
+            messagebox.showerror("错误", f"姿态检测初始化失败:\n{e}")
+            self.running = False
+            self._camera_mgr.close()
+            return
 
-        # 手势引擎
-        self._action_engine = ActionEngine(str(ACTIONS_DEFS))
+        # 动作引擎
+        try:
+            actions_p = str(ACTIONS_DEFS)
+            if not Path(actions_p).exists():
+                messagebox.showerror("错误",
+                    f"动作定义文件未找到:\n{actions_p}")
+                self.running = False
+                self._camera_mgr.close()
+                self._pose_est.close()
+                return
+            self._action_engine = ActionEngine(actions_p)
+        except Exception as e:
+            messagebox.showerror("错误", f"动作引擎初始化失败:\n{e}")
+            self.running = False
+            self._camera_mgr.close()
+            self._pose_est.close()
+            return
 
         # 键盘映射
         profile_path = PROFILES_DIR / f"{self._profile_var.get()}.json"
