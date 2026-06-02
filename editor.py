@@ -344,7 +344,7 @@ class EditorWindow:
     def _build_metric_row(self, parent: Frame, mid: str,
                           minfo: dict, enabled: bool,
                           lo: float, hi: float) -> None:
-        """构建单行指标: 勾选框 + 名称 + 双滑块"""
+        """构建单行指标: 勾选框 + 名称 + 双滑块 (int Scale→float映射)"""
         row = Frame(parent, bg=BG_PANEL)
         row.pack(fill="x", pady=1)
 
@@ -357,55 +357,75 @@ class EditorWindow:
         name = minfo.get("display_name", mid)
         unit = minfo.get("unit", "")
         Label(row, text=f"{name}", font=FONT_SMALL, fg=FG_TEXT,
-              bg=BG_PANEL, width=16, anchor="w").pack(side="left", padx=2)
-        Label(row, text=f"({unit})", font=FONT_SMALL, fg=FG_DIM,
-              bg=BG_PANEL, width=8, anchor="w").pack(side="left")
+              bg=BG_PANEL, width=15, anchor="w").pack(side="left", padx=2)
 
-        # 滑块范围根据单位决定
+        # 滑块范围
         if unit == "°":
-            rmin, rmax, step = 0, 200, 1
+            rmin, rmax = 0.0, 200.0
         elif unit in ("ratio", "ratio/s"):
-            rmin, rmax, step = -1.0, 1.0, 0.01
+            rmin, rmax = -0.5, 0.5
         elif unit == "ms":
-            rmin, rmax, step = 0, 5000, 10
+            rmin, rmax = 0.0, 5000.0
         elif unit == "count":
-            rmin, rmax, step = 0, 100, 1
+            rmin, rmax = 0.0, 100.0
         else:
-            rmin, rmax, step = 0, 200, 1
+            rmin, rmax = 0.0, 200.0
 
-        # lo 滑块
-        var_lo = DoubleVar(value=max(lo, rmin))
-        var_hi = DoubleVar(value=min(hi, rmax))
-        lbl_lo = Label(row, text=f"{lo:g}", font=FONT_MONO, fg=FG_ACCENT2,
-                       bg=BG_PANEL, width=5, anchor="e")
+        SCALE_MAX = 1000  # int scale range
+
+        def int_to_float(ival: int) -> float:
+            return rmin + (ival / SCALE_MAX) * (rmax - rmin)
+
+        def float_to_int(fval: float) -> int:
+            return int((fval - rmin) / (rmax - rmin) * SCALE_MAX)
+
+        lo_int = max(0, min(SCALE_MAX, float_to_int(lo)))
+        hi_int = max(0, min(SCALE_MAX, float_to_int(hi)))
+
+        var_lo_int = IntVar(value=lo_int)
+        var_hi_int = IntVar(value=hi_int)
+
+        # lo 标签 + 滑块
+        lbl_lo = Label(row, text=f"{lo:.1f}", font=FONT_MONO, fg=FG_ACCENT2,
+                       bg=BG_PANEL, width=6, anchor="e")
         lbl_lo.pack(side="left", padx=(4, 0))
 
-        s_lo = Scale(row, from_=rmin, to=rmax, resolution=step,
-                     orient="horizontal", length=100,
-                     variable=var_lo, bg=BG_PANEL, fg=FG_ACCENT2,
-                     troughcolor=BG_MAIN, highlightthickness=0,
-                     showvalue=False, command=lambda v, l=lbl_lo: l.configure(
-                         text=f"{float(v):g}"))
+        def on_lo_change(ival, l=lbl_lo, v=var_lo_int):
+            fv = int_to_float(int(ival))
+            l.configure(text=f"{fv:.1f}")
+
+        s_lo = Scale(row, from_=0, to=SCALE_MAX, orient="horizontal",
+                     length=100, variable=var_lo_int,
+                     bg=BG_PANEL, fg=FG_ACCENT2, troughcolor=BG_MAIN,
+                     highlightthickness=0, showvalue=False,
+                     command=on_lo_change)
         s_lo.pack(side="left", padx=2)
 
-        Label(row, text="—", font=FONT_SMALL, fg=FG_DIM, bg=BG_PANEL).pack(side="left")
+        Label(row, text="–", font=FONT_SMALL, fg=FG_DIM, bg=BG_PANEL).pack(side="left")
 
-        lbl_hi = Label(row, text=f"{hi:g}", font=FONT_MONO, fg=FG_ACCENT2,
-                       bg=BG_PANEL, width=5, anchor="w")
+        # hi 标签 + 滑块
+        lbl_hi = Label(row, text=f"{hi:.1f}", font=FONT_MONO, fg=FG_ACCENT2,
+                       bg=BG_PANEL, width=6, anchor="w")
         lbl_hi.pack(side="left")
 
-        s_hi = Scale(row, from_=rmin, to=rmax, resolution=step,
-                     orient="horizontal", length=100,
-                     variable=var_hi, bg=BG_PANEL, fg=FG_ACCENT2,
-                     troughcolor=BG_MAIN, highlightthickness=0,
-                     showvalue=False, command=lambda v, l=lbl_hi: l.configure(
-                         text=f"{float(v):g}"))
+        def on_hi_change(ival, l=lbl_hi, v=var_hi_int):
+            fv = int_to_float(int(ival))
+            l.configure(text=f"{fv:.1f}")
+
+        s_hi = Scale(row, from_=0, to=SCALE_MAX, orient="horizontal",
+                     length=100, variable=var_hi_int,
+                     bg=BG_PANEL, fg=FG_ACCENT2, troughcolor=BG_MAIN,
+                     highlightthickness=0, showvalue=False,
+                     command=on_hi_change)
         s_hi.pack(side="left", padx=2)
 
         self._metric_widgets[mid] = {
             "enabled": var_enabled,
-            "lo": var_lo,
-            "hi": var_hi,
+            "lo_int": var_lo_int,
+            "hi_int": var_hi_int,
+            "rmin": rmin,
+            "rmax": rmax,
+            "scale_max": SCALE_MAX,
             "lo_label": lbl_lo,
             "hi_label": lbl_hi,
         }
@@ -629,14 +649,15 @@ class EditorWindow:
         for mid, w in self._metric_widgets.items():
             if w["enabled"].get():
                 enabled_metrics.append(mid)
-                lo = w["lo"].get()
-                hi = w["hi"].get()
-                # 确保 lo < hi
+                # int→float 转换
+                rmin, rmax, sc = w["rmin"], w["rmax"], w["scale_max"]
+                lo = rmin + (w["lo_int"].get() / sc) * (rmax - rmin)
+                hi = rmin + (w["hi_int"].get() / sc) * (rmax - rmin)
                 if lo > hi:
                     lo, hi = hi, lo
                 metric_rules[mid] = {
-                    "normal_lo": round(lo, 2),
-                    "normal_hi": round(hi, 2),
+                    "normal_lo": round(lo, 3),
+                    "normal_hi": round(hi, 3),
                     "severity_rules": [],
                 }
 
