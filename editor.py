@@ -282,10 +282,6 @@ class EditorWindow:
         win_id = canvas.create_window((0, 0), window=metric_frame, anchor="nw")
         canvas.configure(yscrollcommand=mscroll.set)
 
-        def _on_frame_configure(event):
-            canvas.configure(scrollregion=canvas.bbox("all"))
-        metric_frame.bind("<Configure>", _on_frame_configure)
-
         def _on_canvas_configure(event):
             canvas.itemconfig(win_id, width=event.width)
         canvas.bind("<Configure>", _on_canvas_configure)
@@ -309,6 +305,12 @@ class EditorWindow:
             hi = rule.get("normal_hi", 100)
 
             self._build_metric_row(metric_frame, mid, minfo, enabled, lo, hi)
+
+        # 强制刷新布局后设置滚动区域
+        metric_frame.update_idletasks()
+        canvas.configure(scrollregion=(0, 0, metric_frame.winfo_reqwidth(),
+                                        metric_frame.winfo_reqheight()))
+        canvas.yview_moveto(0)
 
         # ── 分隔 ──
         Frame(panel, bg=BG_BUTTON, height=1).pack(fill="x", padx=10, pady=4)
