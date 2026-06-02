@@ -4,9 +4,9 @@
 a = Analysis(
     ['run.py'],
     pathex=[],
-    binaries=[],
+    binaries=[('C:/Users/gjc_9/AppData/Roaming/Python/Python313/site-packages/mediapipe/tasks/c/libmediapipe.dll', 'mediapipe/tasks/c')],
     datas=[('assets/models/pose_landmarker_heavy.task', 'assets/models'), ('config/profiles/naruto_fighting.json', 'config/profiles'), ('actions/definitions/metric_catalog.json', 'actions/definitions'), ('actions/definitions/naruto_actions.json', 'actions/definitions')],
-    hiddenimports=['mediapipe', 'mediapipe.tasks', 'mediapipe.tasks.c', 'mediapipe.tasks.python', 'mediapipe.tasks.python.vision', 'mediapipe.tasks.python.vision.core', 'mediapipe.tasks.python.core', 'mediapipe.tasks.python.components', 'mediapipe.tasks.python.components.containers', 'cv2', 'pynput'],
+    hiddenimports=['mediapipe', 'mediapipe.tasks', 'mediapipe.tasks.python', 'mediapipe.tasks.python.vision', 'mediapipe.tasks.python.vision.core', 'mediapipe.tasks.python.core', 'mediapipe.tasks.python.components', 'mediapipe.tasks.python.components.containers', 'cv2', 'pynput'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
