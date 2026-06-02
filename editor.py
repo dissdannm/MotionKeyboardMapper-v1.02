@@ -11,7 +11,7 @@ from copy import deepcopy
 from pathlib import Path
 from tkinter import Toplevel, Frame, Label, Button, Entry, StringVar, IntVar, \
     DoubleVar, BooleanVar, Checkbutton, OptionMenu, messagebox, \
-    Listbox, Scrollbar, Canvas, DISABLED, NORMAL
+    Listbox, DISABLED, NORMAL
 
 if getattr(sys, "frozen", False):
     ROOT = Path(sys._MEIPASS)
@@ -53,9 +53,9 @@ class EditorWindow:
     def __init__(self) -> None:
         self.win = Toplevel()
         self.win.title("动作/档案编辑器 — MotionKeyboardMapper")
-        self.win.geometry("1100x700")
+        self.win.geometry("1100x880")
         self.win.configure(bg=BG_MAIN)
-        self.win.minsize(900, 550)
+        self.win.minsize(900, 700)
 
         # 数据
         self._actions: dict = {}
@@ -272,35 +272,17 @@ class EditorWindow:
         # ── 分隔 ──
         Frame(panel, bg=BG_BUTTON, height=1).pack(fill="x", padx=10, pady=4)
 
-        # ── 中部：26指标选择区 (可滚动) ──
+        # ── 中部：26指标选择区 ──
         Label(panel, text="  指标选择与阈值", font=FONT_NORMAL, fg=FG_ACCENT2,
               bg=BG_PANEL, anchor="w").pack(fill="x", padx=10, pady=(4, 2))
 
-        canvas = Canvas(panel, bg=BG_PANEL, highlightthickness=0, height=320)
-        mscroll = Scrollbar(panel, orient="vertical", command=canvas.yview)
-        metric_frame = Frame(canvas, bg=BG_PANEL)
-        win_id = canvas.create_window((0, 0), window=metric_frame, anchor="nw")
-        canvas.configure(yscrollcommand=mscroll.set)
-
-        def _on_frame_configure(event):
-            canvas.configure(scrollregion=canvas.bbox("all"))
-        metric_frame.bind("<Configure>", _on_frame_configure)
-
-        def _on_canvas_configure(event):
-            canvas.itemconfig(win_id, width=event.width)
-        canvas.bind("<Configure>", _on_canvas_configure)
-
-        canvas.pack(side="left", fill="both", expand=True, padx=(10, 0), pady=2)
-        mscroll.pack(side="right", fill="y", padx=(0, 6), pady=2)
-
-        def _on_mousewheel(event):
-            canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
-        canvas.bind("<Enter>", lambda e: canvas.bind_all("<MouseWheel>", _on_mousewheel))
-        canvas.bind("<Leave>", lambda e: canvas.unbind_all("<MouseWheel>"))
+        metric_frame = Frame(panel, bg=BG_PANEL)
+        metric_frame.pack(fill="both", expand=True, padx=10, pady=2)
 
         enabled_metrics = adef.get("enabled_metrics", [])
         metric_rules = adef.get("metric_rules", {})
 
+        row_num = 0
         for mid in self._catalog:
             minfo = self._catalog[mid]
             enabled = mid in enabled_metrics
@@ -309,6 +291,7 @@ class EditorWindow:
             hi = rule.get("normal_hi", 100)
 
             self._build_metric_row(metric_frame, mid, minfo, enabled, lo, hi)
+            row_num += 1
 
         # ── 分隔 ──
         Frame(panel, bg=BG_BUTTON, height=1).pack(fill="x", padx=10, pady=4)
