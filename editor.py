@@ -279,18 +279,24 @@ class EditorWindow:
         canvas = Canvas(panel, bg=BG_PANEL, highlightthickness=0, height=320)
         mscroll = Scrollbar(panel, orient="vertical", command=canvas.yview)
         metric_frame = Frame(canvas, bg=BG_PANEL)
-        metric_frame.bind("<Configure>",
-                          lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-        canvas.create_window((0, 0), window=metric_frame, anchor="nw")
+        win_id = canvas.create_window((0, 0), window=metric_frame, anchor="nw")
         canvas.configure(yscrollcommand=mscroll.set)
+
+        def _on_frame_configure(event):
+            canvas.configure(scrollregion=canvas.bbox("all"))
+        metric_frame.bind("<Configure>", _on_frame_configure)
+
+        def _on_canvas_configure(event):
+            canvas.itemconfig(win_id, width=event.width)
+        canvas.bind("<Configure>", _on_canvas_configure)
 
         canvas.pack(side="left", fill="both", expand=True, padx=(10, 0), pady=2)
         mscroll.pack(side="right", fill="y", padx=(0, 6), pady=2)
 
-        # 鼠标滚轮
         def _on_mousewheel(event):
             canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
-        canvas.bind_all("<MouseWheel>", _on_mousewheel)
+        canvas.bind("<Enter>", lambda e: canvas.bind_all("<MouseWheel>", _on_mousewheel))
+        canvas.bind("<Leave>", lambda e: canvas.unbind_all("<MouseWheel>"))
 
         enabled_metrics = adef.get("enabled_metrics", [])
         metric_rules = adef.get("metric_rules", {})
