@@ -11,7 +11,7 @@ from copy import deepcopy
 from pathlib import Path
 from tkinter import Toplevel, Frame, Label, Button, Entry, StringVar, IntVar, \
     DoubleVar, BooleanVar, Checkbutton, OptionMenu, messagebox, \
-    Listbox, Scrollbar, Canvas, DISABLED, NORMAL
+    Listbox, Scrollbar, Text, DISABLED, NORMAL
 
 if getattr(sys, "frozen", False):
     ROOT = Path(sys._MEIPASS)
@@ -272,27 +272,20 @@ class EditorWindow:
         # ── 分隔 ──
         Frame(panel, bg=BG_BUTTON, height=1).pack(fill="x", padx=10, pady=4)
 
-        # ── 中部：26指标选择区 (可滚动) ──
+        # ── 中部：26指标选择区 (Text widget 嵌入，可靠滚动) ──
         Label(panel, text="  指标选择与阈值", font=FONT_NORMAL, fg=FG_ACCENT2,
               bg=BG_PANEL, anchor="w").pack(fill="x", padx=10, pady=(4, 2))
 
-        canvas = Canvas(panel, bg=BG_PANEL, highlightthickness=0, height=320)
-        mscroll = Scrollbar(panel, orient="vertical", command=canvas.yview)
-        metric_frame = Frame(canvas, bg=BG_PANEL)
-        win_id = canvas.create_window((0, 0), window=metric_frame, anchor="nw")
-        canvas.configure(yscrollcommand=mscroll.set)
+        txt_frame = Frame(panel, bg=BG_PANEL)
+        txt_frame.pack(fill="both", expand=True, padx=10, pady=2)
 
-        def _on_canvas_configure(event):
-            canvas.itemconfig(win_id, width=event.width)
-        canvas.bind("<Configure>", _on_canvas_configure)
-
-        canvas.pack(side="left", fill="both", expand=True, padx=(10, 0), pady=2)
-        mscroll.pack(side="right", fill="y", padx=(0, 6), pady=2)
-
-        def _on_mousewheel(event):
-            canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
-        canvas.bind("<Enter>", lambda e: canvas.bind_all("<MouseWheel>", _on_mousewheel))
-        canvas.bind("<Leave>", lambda e: canvas.unbind_all("<MouseWheel>"))
+        txt = Text(txt_frame, bg=BG_PANEL, fg=FG_TEXT, font=FONT_SMALL,
+                   wrap="none", borderwidth=0, highlightthickness=0,
+                   cursor="arrow", height=15, state="normal")
+        txt_scroll = Scrollbar(txt_frame, orient="vertical", command=txt.yview)
+        txt.configure(yscrollcommand=txt_scroll.set)
+        txt.pack(side="left", fill="both", expand=True)
+        txt_scroll.pack(side="right", fill="y")
 
         enabled_metrics = adef.get("enabled_metrics", [])
         metric_rules = adef.get("metric_rules", {})
@@ -304,13 +297,12 @@ class EditorWindow:
             lo = rule.get("normal_lo", 0)
             hi = rule.get("normal_hi", 100)
 
-            self._build_metric_row(metric_frame, mid, minfo, enabled, lo, hi)
+            row_frame = Frame(txt, bg=BG_PANEL)
+            self._build_metric_row(row_frame, mid, minfo, enabled, lo, hi)
+            txt.window_create("end", window=row_frame, stretch=True)
+            txt.insert("end", "\n")
 
-        # 强制刷新布局后设置滚动区域
-        metric_frame.update_idletasks()
-        canvas.configure(scrollregion=(0, 0, metric_frame.winfo_reqwidth(),
-                                        metric_frame.winfo_reqheight()))
-        canvas.yview_moveto(0)
+        txt.configure(state="disabled")
 
         # ── 分隔 ──
         Frame(panel, bg=BG_BUTTON, height=1).pack(fill="x", padx=10, pady=4)
