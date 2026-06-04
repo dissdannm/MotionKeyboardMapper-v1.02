@@ -8,3 +8,8 @@ venv/
 dist/
 build/
 
+__pycache__/
+*.pyc
+build/
+dist/
+

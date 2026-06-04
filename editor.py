@@ -11,7 +11,7 @@ from copy import deepcopy
 from pathlib import Path
 from tkinter import Toplevel, Frame, Label, Button, Entry, StringVar, IntVar, \
     DoubleVar, BooleanVar, Checkbutton, OptionMenu, messagebox, \
-    Listbox, Scrollbar, Text, DISABLED, NORMAL
+    Listbox, Scrollbar, Scale, Text, Canvas, DISABLED, NORMAL
 
 if getattr(sys, "frozen", False):
     ROOT = Path(sys._MEIPASS)
@@ -279,9 +279,9 @@ class EditorWindow:
         txt_frame = Frame(panel, bg=BG_PANEL)
         txt_frame.pack(fill="both", expand=True, padx=10, pady=2)
 
-        txt = Text(txt_frame, bg=BG_PANEL, fg=FG_TEXT, font=FONT_SMALL,
-                   wrap="none", borderwidth=0, highlightthickness=0,
-                   cursor="arrow", height=15, state="normal")
+        txt = Text(txt_frame, bg=BG_MAIN, fg=FG_TEXT, font=FONT_SMALL,
+                   wrap="none", bd=1, relief="flat",
+                   cursor="arrow", height=14, state="normal")
         txt_scroll = Scrollbar(txt_frame, orient="vertical", command=txt.yview)
         txt.configure(yscrollcommand=txt_scroll.set)
         txt.pack(side="left", fill="both", expand=True)
@@ -290,6 +290,7 @@ class EditorWindow:
         enabled_metrics = adef.get("enabled_metrics", [])
         metric_rules = adef.get("metric_rules", {})
 
+        row_idx = 0
         for mid in self._catalog:
             minfo = self._catalog[mid]
             enabled = mid in enabled_metrics
@@ -297,12 +298,15 @@ class EditorWindow:
             lo = rule.get("normal_lo", 0)
             hi = rule.get("normal_hi", 100)
 
-            row_frame = Frame(txt, bg=BG_PANEL)
+            bg = "#1a2540" if row_idx % 2 == 0 else BG_PANEL  # 交替色
+            row_frame = Frame(txt, bg=bg)
             self._build_metric_row(row_frame, mid, minfo, enabled, lo, hi)
-            txt.window_create("end", window=row_frame, stretch=True)
+            txt.window_create("end", window=row_frame, stretch=True, pady=0)
             txt.insert("end", "\n")
+            row_idx += 1
 
-        txt.configure(state="disabled")
+        # 保持只读但不 disable（disable 会影响嵌入控件）
+        txt.bind("<Key>", lambda e: "break")
 
         # ── 分隔 ──
         Frame(panel, bg=BG_BUTTON, height=1).pack(fill="x", padx=10, pady=4)
@@ -467,22 +471,26 @@ class EditorWindow:
             Label(hdr, text=text, font=FONT_SMALL, fg=FG_ACCENT2,
                   bg=BG_PANEL, width=w, anchor="w").pack(side="left")
 
-        # 映射行
-        map_canvas = Canvas(panel, bg=BG_PANEL, highlightthickness=0, height=280)
-        map_scroll = Scrollbar(panel, orient="vertical", command=map_canvas.yview)
-        self._map_frame = Frame(map_canvas, bg=BG_PANEL)
-        self._map_frame.bind("<Configure>",
-                             lambda e: map_canvas.configure(
-                                 scrollregion=map_canvas.bbox("all")))
-        map_canvas.create_window((0, 0), window=self._map_frame, anchor="nw")
-        map_canvas.configure(yscrollcommand=map_scroll.set)
-        map_canvas.pack(side="left", fill="both", expand=True, padx=(10, 0))
-        map_scroll.pack(side="right", fill="y", padx=(0, 6))
+        # 映射行 (Text嵌入)
+        map_txt_frame = Frame(panel, bg=BG_PANEL)
+        map_txt_frame.pack(fill="both", expand=True, padx=10, pady=2)
+
+        self._map_txt = Text(map_txt_frame, bg=BG_MAIN, fg=FG_TEXT, font=FONT_SMALL,
+                       wrap="none", bd=1, relief="flat",
+                       cursor="arrow", height=8, state="normal")
+        map_mscroll = Scrollbar(map_txt_frame, orient="vertical", command=self._map_txt.yview)
+        self._map_txt.configure(yscrollcommand=map_mscroll.set)
+        self._map_txt.pack(side="left", fill="both", expand=True)
+        map_mscroll.pack(side="right", fill="y")
+        self._map_txt.bind("<Key>", lambda e: "break")
 
         self._mapping_rows: list[dict] = []
         action_ids = list(self._actions.keys())
         for m in mappings:
-            self._build_mapping_row(self._map_frame, m, action_ids)
+            row_frame = Frame(self._map_txt, bg=BG_PANEL)
+            self._build_mapping_row(row_frame, m, action_ids)
+            self._map_txt.window_create("end", window=row_frame, stretch=True, pady=0)
+            self._map_txt.insert("end", "\n")
 
         # 按钮
         btnf = Frame(panel, bg=BG_PANEL)
@@ -490,7 +498,7 @@ class EditorWindow:
         Button(btnf, text="+ 添加映射", font=FONT_SMALL,
                bg=BG_BUTTON, fg=FG_TEXT, relief="flat", cursor="hand2",
                command=lambda: self._build_mapping_row(
-                   self._map_frame,
+                   self._map_txt,
                    {"action_id": "", "key": "", "hold": False,
                     "description": ""}, action_ids)).pack(side="left")
 
