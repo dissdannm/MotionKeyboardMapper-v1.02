@@ -1,6 +1,11 @@
-"""PyInstaller entry — single-file launcher (Flet Apple style)"""
+"""PyInstaller entry — Flet Apple style"""
+import sys
 import flet as ft
-from launcher import main
 
 if __name__ == "__main__":
-    ft.run(main)
+    if "--editor" in sys.argv:
+        from editor import main as editor_main
+        ft.run(editor_main)
+    else:
+        from launcher import main
+        ft.run(main)

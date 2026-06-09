@@ -1,12 +1,39 @@
 # -*- mode: python ; coding: utf-8 -*-
+import os
+import sys
 
+# Flet 资源路径
+_flet_base = os.path.dirname(__import__('flet').__file__)
 
 a = Analysis(
     ['run.py'],
     pathex=[],
-    binaries=[('C:/Users/gjc_9/AppData/Roaming/Python/Python313/site-packages/mediapipe/tasks/c/libmediapipe.dll', 'mediapipe/tasks/c')],
-    datas=[('assets/models/pose_landmarker_heavy.task', 'assets/models'), ('config/profiles/naruto_fighting.json', 'config/profiles'), ('actions/definitions/metric_catalog.json', 'actions/definitions'), ('actions/definitions/naruto_actions.json', 'actions/definitions')],
-    hiddenimports=['mediapipe', 'mediapipe.tasks', 'mediapipe.tasks.python', 'mediapipe.tasks.python.vision', 'mediapipe.tasks.python.vision.core', 'mediapipe.tasks.python.core', 'mediapipe.tasks.python.components', 'mediapipe.tasks.python.components.containers', 'cv2', 'pynput'],
+    binaries=[
+        ('C:/Users/gjc_9/AppData/Roaming/Python/Python313/site-packages/mediapipe/tasks/c/libmediapipe.dll', 'mediapipe/tasks/c'),
+    ],
+    datas=[
+        ('assets/models/pose_landmarker_heavy.task', 'assets/models'),
+        ('config/profiles/naruto_fighting.json', 'config/profiles'),
+        ('actions/definitions/metric_catalog.json', 'actions/definitions'),
+        ('actions/definitions/naruto_actions.json', 'actions/definitions'),
+        # Flet icon JSONs
+        (os.path.join(_flet_base, 'controls', 'material', 'icons.json'), 'flet/controls/material'),
+        (os.path.join(_flet_base, 'controls', 'cupertino', 'cupertino_icons.json'), 'flet/controls/cupertino'),
+    ],
+    hiddenimports=[
+        'mediapipe', 'mediapipe.tasks', 'mediapipe.tasks.python',
+        'mediapipe.tasks.python.vision', 'mediapipe.tasks.python.vision.core',
+        'mediapipe.tasks.python.core', 'mediapipe.tasks.python.components',
+        'mediapipe.tasks.python.components.containers',
+        'cv2', 'pynput',
+        'flet', 'flet.app', 'flet.event', 'flet.theme', 'flet.types',
+        'flet.controls', 'flet.controls.material', 'flet.controls.core',
+        'flet.controls.box', 'flet.controls.border', 'flet.controls.padding',
+        'flet.controls.alignment', 'flet.controls.animation', 'flet.controls.ref',
+        'flet.controls.transform', 'flet.controls.text_style',
+        'flet.controls.cupertino',
+        'flet_desktop',
+    ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],

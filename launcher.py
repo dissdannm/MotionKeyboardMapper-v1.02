@@ -784,8 +784,11 @@ class LauncherApp:
         self.page.update()
 
     def _on_editor(self) -> None:
-        from editor import open_editor
-        open_editor()
+        import subprocess
+        if getattr(sys, "frozen", False):
+            subprocess.Popen([sys.executable, "--editor"])
+        else:
+            subprocess.Popen([sys.executable, str(ROOT / "editor.py")])
 
     def _set_running_ui(self, running: bool) -> None:
         if running:
